@@ -1,0 +1,21 @@
+//
+//  MyNetworkDriver.iig
+//  MyNetworkDriver
+//
+//  Created by Prathamesh Walunj on 11/23/24.
+//
+
+#ifndef MyNetworkDriver_h
+#define MyNetworkDriver_h
+
+#include <Availability.h>
+#include <DriverKit/IOService.iig>
+
+class MyNetworkDriver: public IOService
+{
+public:
+    virtual kern_return_t
+    Start(IOService * provider) override;
+};
+
+#endif /* MyNetworkDriver_h */
