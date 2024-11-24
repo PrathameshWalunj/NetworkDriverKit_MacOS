@@ -109,3 +109,22 @@ IMPL(MyNetworkDriver, Start)
     0s_log(OS_LOG_DEFAULT, "MyNetworkDriver: Started successfully");
     return kIOReturnSuccess;
 }
+
+/*
+ * Stop Method Implementation
+ * Called when the driver is being stopped/unloaded
+ * Cleans up all resources we allocated
+ */
+kern_return_t
+IMPL(MyNetworkDriver, Stop)
+{
+    // Log that we're stopping
+    os_log(OS_LOG_DEFAULT, "MyNetworkDriver: Stopping driver");
+    
+    // Clean up our dispatch queue if it exists
+    if (ivars->dispatchQueue) {
+        // OSSafeReleaseNULL safely releases and nulls the pointer
+        // This prevents double free issues
+        OSSafeReleaseNULL(ivars->dispatchQueue);
+    }
+}

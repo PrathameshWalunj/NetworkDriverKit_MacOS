@@ -12,10 +12,12 @@ Data Link Layer (Layer 2) <- Our driver operates here
 Physical Layer (Layer 1)
 
 ####2. Ethernet Frame Structure
+```
 +----------------+----------------+----------------+----------------+-------------------+
 | Preamble (8B)  | Dest MAC (6B) | Src MAC (6B)  | EtherType (2B)| Payload (46-1500B)| CRC (4B) |
 +----------------+----------------+----------------+----------------+-------------------+
                  |<---------------------------- Our Driver Handles ------------------->|
+```
 
 ####3. Driver Specific Concepts
 #####Packet Queues
@@ -31,9 +33,12 @@ Physical Layer (Layer 1)
 - **Why it matters**: Affects packet fragmentation and performance
 
 ####Interface States
+```
 Disabled → Enabling → Enabled → Disabling
     ↑                              |
     --------------------------------
+```
+
 ####Driver-Specific Operations
 1. **Packet Processing
 
