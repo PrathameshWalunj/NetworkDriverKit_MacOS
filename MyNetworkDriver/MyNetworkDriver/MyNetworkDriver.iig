@@ -44,6 +44,8 @@ public:
     // HandlePacketAvailable - Called when there are packets to be processed
     virtual void HandlePacketAvailable(void) override;
     
+    virtual bool init(void) override;
+    
     
     
 };

@@ -71,3 +71,41 @@ bool MyNetworkDriver::init()
     os_log(OS_LOG_DEFAULT, "MyNetworkDriver: Initialized");
     return true;
     
+}
+
+/*Start Method Implementation
+ *Set up driver's resources and prepare for operation
+ *Returns: kIOReturnSuccess if successful, error code otherwise
+ */
+
+kern_return_t
+IMPL(MyNetworkDriver, Start)
+{
+    kern_return_t ret;
+    
+    // log the start
+    os_log(OS_LOG_DEFAULT, "MyNetworkDriver: Starting");
+    
+    // start superclass first
+    // SUPERDISPATCH ensures superclass's Start is called
+    ret = Start(provider, SUPERDISPATCH);
+    if (ret != kIOReturnSuccess) {
+        os_log(OS_LOG_DEFAULT, "MyNetworkDriver: Superclass start failed");
+        return ret;
+    }
+    
+    // Create main dispatch queue
+    // This queue ensures our driver operations are thread safe
+    ret = CreateDispatchQueue("MyNetworkDriver-Queue", &ivars->dispatchQueue);
+    if (ret != kIOReturnSuccess) {
+        os_log(OS_LOG_DEFAULT, "MyNetworkDriver: Failed to create dispatch queue");
+        return ret;
+        }
+    
+    // Set up interface properties
+    // This configures how our network interface appears to the system
+    setInterfaceProperties();
+    
+    0s_log(OS_LOG_DEFAULT, "MyNetworkDriver: Started successfully");
+    return kIOReturnSuccess;
+}
