@@ -11,6 +11,10 @@
 #include <NetworkingDriverKit/IOUserNetworkEthernet.h>
 #include "MyNetworkDriver.h"
 
+#define super IOUserNetworkEthernet
+OSDefineMetaClassAndStructors(MyNetworkDriver, IOUserNetworkEthernet);
+
+
 /*
  *Instance Variable Structure
  *Structure holds driver's private data
@@ -38,3 +42,32 @@ struct MyNetworkDriver_IVars {
     // true = enabled, false = disbaled
     bool                            enabled;
 };
+
+
+
+
+/*
+ *Initialization Method
+ *Called when driver object is first created
+ *Return true if initialization successfull, false otherwise
+ */
+
+bool MyNetworkDriver::init()
+{
+    // Always call superclass init first
+    // ensures proper initialization of inherited features
+    if (!super::init()) {
+        return false;
+    }
+    
+    // Allocate instance variables structure
+    // IONewZero both allocates & zeros the memory
+    ivars = IONewZero(MyNetworkDriver_IVars, 1);
+    if (ivars == nullptr) {
+        os_log(OS_LOG_DEFAULT, "MyNetworkDriver: Initialization failed! out of memory");
+        return false;
+    }
+    
+    os_log(OS_LOG_DEFAULT, "MyNetworkDriver: Initialized");
+    return true;
+    
