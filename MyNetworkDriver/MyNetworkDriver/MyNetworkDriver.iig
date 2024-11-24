@@ -8,14 +8,44 @@
 #ifndef MyNetworkDriver_h
 #define MyNetworkDriver_h
 
+/*
+ *Header file for network driver (.iig = IOKit Interface Generator)
+ *This file defins the public interface of driver class
+ */
 #include <Availability.h>
-#include <DriverKit/IOService.iig>
+// Include NetworkingDriverKit headers to have access to networking
+// specific functionality
+#include <NetworkingDriverKit/IOUserNetworkEthernet.iig>
+#include <NetworkingDriverKit/IOUserNetworkPacketQueue.iig>
 
-class MyNetworkDriver: public IOService
+/*
+ *MyNetworkDriver Class Declaration
+ *Inherit from IOUserNetworkEthernet, provides:
+ *1)Network Specific functionality
+ *2)Handles lot of low level network interface setup
+ *3)Have access to packet queues and network statistics
+ */
+class MyNetworkDriver: public IOUserNetworkEthernet
 {
 public:
-    virtual kern_return_t
-    Start(IOService * provider) override;
+    // Start - Called when the driver is being initialized
+    // provider: The provider service # usually the service that matched our driver
+    // kern_return_t -> standard macOS kernel return type indicating success or failure
+    virtual kern_return_t Start(IOService* provider) override;
+    
+    // Stop - Called when the driver is terminated
+    // Clean up resources here
+    virtual kern_return_t Stop(IOService* provider) override;
+    
+    // SetInterfaceEnable - Called to enable/disable the network interface
+    // enabled true to enable, false to disable
+    virtual kern_return_t SetInterfaceEnable(bool enabled) override;
+    
+    // HandlePacketAvailable - Called when there are packets to be processed
+    virtual void HandlePacketAvailable(void) override;
+    
+    
+    
 };
 
 #endif /* MyNetworkDriver_h */
