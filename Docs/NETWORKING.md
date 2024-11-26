@@ -1,6 +1,6 @@
 ## Networking Concepts for Driver Development
 ### Core Concepts
-####1. Network Stack Layers
+#### 1. Network Stack Layers
 CopyApplication Layer (Layer 7)
        ↓
 Transport Layer (Layer 4)
@@ -11,7 +11,7 @@ Data Link Layer (Layer 2) <- Our driver operates here
        ↓
 Physical Layer (Layer 1)
 
-####2. Ethernet Frame Structure
+#### 2. Ethernet Frame Structure
 ```
 +----------------+----------------+----------------+----------------+-------------------+
 | Preamble (8B)  | Dest MAC (6B) | Src MAC (6B)  | EtherType (2B)| Payload (46-1500B)| CRC (4B) |
@@ -19,8 +19,8 @@ Physical Layer (Layer 1)
                  |<---------------------------- Our Driver Handles ------------------->|
 ```
 
-####3. Driver Specific Concepts
-#####Packet Queues
+#### 3. Driver Specific Concepts
+##### Packet Queues
 
 - **Transmit Queue (TX)**: Outgoing packets waiting to be sent
 - **Receive Queue (RX)**: Incoming packets waiting to be processed
@@ -92,7 +92,7 @@ Disabled → Enabling → Enabled → Disabling
 - **Packet**: Layer 3 data unit
 - **Segment**: Layer 4 data unit
 
-####Performance Terms
+#### Performance Terms
 
 - **Throughput**: Actual data transfer rate
 - **Latency**: Time for packet to reach destination
@@ -156,10 +156,66 @@ Hardware Layer  [    Network       Card   ]
    - Driver unloaded
 
 ### Memory Management in Network Drivers
-- **Principle:** "Allocate early, free late"
+- **Principle:** Allocate early, free late
 - **Why?** Network operations need predictable memory access
 - **How?** Pre-allocated buffer pools and queue management
 
 11/24
+
+## Ethernet Frame Components
+1. **Preamble**
+   - Necessary to synchronize sender and receiver clock rates.
+2. **EtherType**
+   - Each protocol layer needs to provide hooks for upper layer protocols (e.g., port numbers for TCP/UDP).
+   - EtherType indicates the higher-layer protocol, mostly IP.
+
+---
+
+### Ethernet Problems
+- **Peak Throughput Challenges:**
+  - **More Hosts:** Increased collisions when identifying a single sender.
+  - **Small Packet Sizes:** More frequent arbitration due to smaller packets.
+  - **Longer Links:** Collisions take longer to observe, wasting bandwidth.
+
+---
+
+### CSMA/CD (Carrier Sense Multiple Access / Collision Detection)
+
+#### How It Works:
+1. **Carrier Sense:**
+   - Devices listen to the network using transmitters/receivers to detect existing signals.
+   - Network states:
+     - **Idle:** No devices transmitting.
+     - **Busy:** One or more devices transmitting.
+   
+2. **Decision Making:**
+   - If **idle**:
+     - Ensure the network remains idle for a specific time (Interframe Gap - IFG).
+     - Verify no other devices are transmitting.
+
+3. **Data Transmission:**
+   - Send data frames onto the network.
+
+4. **Collision Detection:**
+   - Monitor network activity during transmission.
+   - Detect collisions using:
+     - **Jam Signal:** A unique signal to indicate collisions.
+     - **Signal Strength:** Detect abnormalities in signal levels.
+
+5. **Collision Types:**
+   - **Local:** Within the device's transmission range.
+   - **Remote:** Outside the device's transmission range.
+
+6. **Retry Transmission:**
+   - Wait for the backoff time to expire.
+   - **Backoff Algorithms:**
+     - **Exponential:** Wait time increases exponentially with each collision.
+     - **Randomized:** Add a randomized delay to reduce future collisions.
+   - Retransmit data and repeat the process until successful transmission.
+
+7. **Maximum Retries:**
+   - After reaching the retry limit, the connection is abandoned.
+   
+11/25
 
 
