@@ -11,9 +11,6 @@
 #include <NetworkingDriverKit/IOUserNetworkEthernet.h>
 #include "MyNetworkDriver.h"
 
-#define super IOUserNetworkEthernet
-OSDefineMetaClassAndStructors(MyNetworkDriver, IOUserNetworkEthernet);
-
 
 /*
  *Instance Variable Structure
@@ -43,7 +40,8 @@ struct MyNetworkDriver_IVars {
     bool                            enabled;
 };
 
-
+#define super IOUserNetworkEthernet
+OSDefineMetaClassAndStructors(MyNetworkDriver, IOUserNetworkEthernet);
 
 
 /*
@@ -79,6 +77,11 @@ bool MyNetworkDriver::init()
  */
 
 kern_return_t
+/*
+ *IMPL
+ *Tells the system that the superclass implementation of this method runs in the kernel.
+ */
+
 IMPL(MyNetworkDriver, Start)
 {
     kern_return_t ret;
@@ -106,7 +109,7 @@ IMPL(MyNetworkDriver, Start)
     // This configures how our network interface appears to the system
     setInterfaceProperties();
     
-    0s_log(OS_LOG_DEFAULT, "MyNetworkDriver: Started successfully");
+    os_log(OS_LOG_DEFAULT, "MyNetworkDriver: Started successfully");
     return kIOReturnSuccess;
 }
 
