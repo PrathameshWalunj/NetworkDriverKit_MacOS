@@ -28,6 +28,7 @@
 class MyNetworkDriver: public IOUserNetworkEthernet
 {
 public:
+    virtual bool init(void) override;
     // Start - Called when the driver is being initialized
     // provider: The provider service # usually the service that matched our driver
     // kern_return_t -> standard macOS kernel return type indicating success or failure
@@ -43,10 +44,7 @@ public:
     
     // HandlePacketAvailable - Called when there are packets to be processed
     virtual void HandlePacketAvailable(void) override;
-    
-    virtual bool init(void) override;
-    
-    
+
     
 };
 
